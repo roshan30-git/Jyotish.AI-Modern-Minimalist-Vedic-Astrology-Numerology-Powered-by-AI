@@ -1,9 +1,11 @@
+
+
 import React from 'react';
 import { AnalysisResult, CompatibilityReport } from '../types';
 import { 
   Heart, Briefcase, Zap, ShieldAlert, Star, 
   ArrowLeft, Leaf, BookOpen, User, Calendar, Share2, Printer, Music, CheckCircle2, XCircle,
-  MessageCircle, Flame, Lock, Coins, Sparkles, AlertTriangle
+  MessageCircle, Flame, Lock, Coins, Sparkles, AlertTriangle, Download, ImageIcon
 } from 'lucide-react';
 
 interface ResultsViewProps {
@@ -28,6 +30,7 @@ const UI_LABELS = {
     auspiciousMilestones: "Auspicious Milestones",
     culturalVibe: "Cultural Insight",
     luckyFactors: "Lucky Factors",
+    luckyElements: "Lucky Elements",
     colors: "Colors",
     direction: "Direction",
     numbers: "Lucky Numbers",
@@ -53,7 +56,9 @@ const UI_LABELS = {
     love: "Love",
     health: "Health",
     family: "Family",
-    spirituality: "Spirituality"
+    spirituality: "Spirituality",
+    downloadArt: "Download Art",
+    generatedArt: "Cosmic Art"
   },
   hi: {
     relationshipAnalysis: "सम्बंध विश्लेषण",
@@ -70,6 +75,7 @@ const UI_LABELS = {
     auspiciousMilestones: "शुभ पड़ाव (Milestones)",
     culturalVibe: "सांस्कृतिक अंतर्दृष्टि",
     luckyFactors: "भाग्यशाली कारक",
+    luckyElements: "भाग्यशाली तत्व",
     colors: "रंग",
     direction: "दिशा",
     numbers: "शुभ अंक",
@@ -95,7 +101,9 @@ const UI_LABELS = {
     love: "प्रेम",
     health: "स्वास्थ्य",
     family: "परिवार",
-    spirituality: "अध्यात्म"
+    spirituality: "अध्यात्म",
+    downloadArt: "कला डाउनलोड करें",
+    generatedArt: "ब्रह्मांडीय कला"
   }
 };
 
@@ -162,16 +170,32 @@ const CompatibilityDashboard: React.FC<{ data: AnalysisResult, report: Compatibi
                         </div>
                     </div>
                     
-                    {/* Score Circle */}
+                    {/* Score Circle or Generated Image */}
                     <div className="relative w-40 h-40 flex-shrink-0">
-                         <svg className="w-full h-full transform -rotate-90">
-                            <circle cx="80" cy="80" r="70" stroke="currentColor" strokeWidth="12" fill="transparent" className="text-pink-800/30" />
-                            <circle cx="80" cy="80" r="70" stroke="white" strokeWidth="12" fill="transparent" strokeDasharray={440} strokeDashoffset={440 - (440 * report.overallScore) / 100} strokeLinecap="round" />
-                        </svg>
-                        <div className="absolute inset-0 flex flex-col items-center justify-center">
-                            <span className="text-4xl font-bold">{report.overallScore}%</span>
-                            <span className="text-xs text-pink-100 uppercase tracking-widest">{labels.match}</span>
-                        </div>
+                        {data.generatedImage ? (
+                            <div className="w-full h-full rounded-full border-4 border-white/30 overflow-hidden shadow-2xl relative group">
+                                <img src={data.generatedImage} alt="Cosmic Art" className="w-full h-full object-cover" />
+                                <a 
+                                    href={data.generatedImage} 
+                                    download="jyotish-match-art.png" 
+                                    className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                    title={labels.downloadArt}
+                                >
+                                    <Download className="text-white w-8 h-8" />
+                                </a>
+                            </div>
+                        ) : (
+                            <>
+                                <svg className="w-full h-full transform -rotate-90">
+                                    <circle cx="80" cy="80" r="70" stroke="currentColor" strokeWidth="12" fill="transparent" className="text-pink-800/30" />
+                                    <circle cx="80" cy="80" r="70" stroke="white" strokeWidth="12" fill="transparent" strokeDasharray={440} strokeDashoffset={440 - (440 * report.overallScore) / 100} strokeLinecap="round" />
+                                </svg>
+                                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                                    <span className="text-4xl font-bold">{report.overallScore}%</span>
+                                    <span className="text-xs text-pink-100 uppercase tracking-widest">{labels.match}</span>
+                                </div>
+                            </>
+                        )}
                     </div>
                  </div>
             </div>
@@ -362,18 +386,36 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ data, onReset }) => {
                     </p>
                 </div>
 
-                {/* Animal Persona Card */}
+                {/* Animal Persona / Generated Image Card */}
                 <div className="w-full md:w-auto flex-shrink-0">
-                    <div className="bg-white/50 dark:bg-slate-700/50 rounded-2xl p-4 border border-orange-100 dark:border-slate-600 shadow-sm backdrop-blur-sm flex md:flex-col items-center gap-4 md:gap-2 min-w-[160px]">
-                        <div className="text-5xl drop-shadow-sm">{data.animalPersona.emoji}</div>
-                        <div className="flex-1 md:text-center">
-                            <p className="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold mb-0.5">{labels.spiritAnimal}</p>
-                            <h3 className="text-lg font-bold text-slate-800 dark:text-white leading-tight">{data.animalPersona.animal}</h3>
-                            <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 line-clamp-2 md:line-clamp-none max-w-[200px] md:max-w-[140px]">
-                                {data.animalPersona.description}
-                            </p>
+                    {data.generatedImage ? (
+                        <div className="relative group rounded-2xl overflow-hidden shadow-lg border border-orange-100 dark:border-slate-600 md:w-48 md:h-48 w-full aspect-square">
+                            <img src={data.generatedImage} alt="Cosmic Spirit" className="w-full h-full object-cover" />
+                            <a 
+                                href={data.generatedImage} 
+                                download="jyotish-art.png"
+                                className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300"
+                            >
+                                <span className="text-white text-xs font-bold flex items-center gap-1 bg-white/20 px-3 py-1.5 rounded-full backdrop-blur-sm">
+                                    <Download className="w-4 h-4" /> {labels.downloadArt}
+                                </span>
+                            </a>
+                            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2">
+                                <p className="text-white text-xs font-bold text-center">{data.animalPersona.animal}</p>
+                            </div>
                         </div>
-                    </div>
+                    ) : (
+                        <div className="bg-white/50 dark:bg-slate-700/50 rounded-2xl p-4 border border-orange-100 dark:border-slate-600 shadow-sm backdrop-blur-sm flex md:flex-col items-center gap-4 md:gap-2 min-w-[160px]">
+                            <div className="text-5xl drop-shadow-sm">{data.animalPersona.emoji}</div>
+                            <div className="flex-1 md:text-center">
+                                <p className="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold mb-0.5">{labels.spiritAnimal}</p>
+                                <h3 className="text-lg font-bold text-slate-800 dark:text-white leading-tight">{data.animalPersona.animal}</h3>
+                                <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 line-clamp-2 md:line-clamp-none max-w-[200px] md:max-w-[140px]">
+                                    {data.animalPersona.description}
+                                </p>
+                            </div>
+                        </div>
+                    )}
                 </div>
                 </div>
             </div>

@@ -1,5 +1,4 @@
 
-
 import { GoogleGenAI, Type, Schema } from "@google/genai";
 import { UserInputs, AnalysisResult } from "../types";
 
@@ -85,7 +84,7 @@ const analysisSchema: Schema = {
       required: ["love", "career", "health", "family", "spirituality"]
     },
     luckyDays: {
-      type: Type.ARRAY,
+      type: Type.ARRAY, 
       items: { type: Type.STRING },
       description: "List 2-3 favorable days."
     },
@@ -130,10 +129,11 @@ const analysisSchema: Schema = {
 };
 
 export const generateAstrologyInsights = async (inputs: UserInputs): Promise<AnalysisResult> => {
+  // Use user-provided API key if available, otherwise fallback to environment variable
   const finalApiKey = inputs.apiKey || process.env.API_KEY;
 
   if (!finalApiKey) {
-    throw new Error("API Key is missing. Please paste your key in the form.");
+    throw new Error("API Key is missing. Please provide a custom key or ensure the app is configured correctly.");
   }
 
   const ai = new GoogleGenAI({ apiKey: finalApiKey });
@@ -211,6 +211,7 @@ export const generateAstrologyInsights = async (inputs: UserInputs): Promise<Ana
   `;
 
   try {
+    // 1. Text Analysis
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
       contents: prompt,
@@ -225,12 +226,50 @@ export const generateAstrologyInsights = async (inputs: UserInputs): Promise<Ana
     if (!text) throw new Error("No response from AI");
     
     const result = JSON.parse(text) as AnalysisResult;
-    // Inject the requested language so the UI can render static labels correctly
     result.language = language;
+
+    // 2. Image Generation (Optional)
+    if (inputs.includeImage) {
+        try {
+            const imagePrompt = `
+                A majestic, spiritual, and ethereal artistic representation of a ${result.animalPersona.animal}. 
+                Style: High-end digital art, glowing bioluminescence, Vedic cosmic aesthetics.
+                Mood: ${result.basicSummary.substring(0, 100)}.
+                Colors: Dominant shades of ${result.luckyElements.colors}.
+                No text. Cinematic lighting.
+            `;
+            
+            // Downgraded to gemini-2.5-flash-image which is free tier compatible.
+            // Removed imageSize as it is not supported by this model.
+            const imageResponse = await ai.models.generateContent({
+                model: 'gemini-2.5-flash-image',
+                contents: {
+                    parts: [{ text: imagePrompt }],
+                },
+                config: {
+                    imageConfig: {
+                        aspectRatio: "1:1",
+                    }
+                }
+            });
+
+            // Extract image data
+            for (const part of imageResponse.candidates?.[0]?.content?.parts || []) {
+                if (part.inlineData) {
+                    result.generatedImage = `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
+                    break;
+                }
+            }
+        } catch (imgError) {
+            console.error("Image generation failed:", imgError);
+            // We do not throw here, so the user still gets the text analysis.
+        }
+    }
+
     return result;
 
   } catch (error) {
     console.error("Gemini API Error:", error);
-    throw new Error("Unable to generate astrological insights. Please check your API Key and try again.");
+    throw error; // Re-throw to be caught by UI
   }
 };

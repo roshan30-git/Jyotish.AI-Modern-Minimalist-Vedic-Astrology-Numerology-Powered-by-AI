@@ -1,10 +1,10 @@
 
 
 export interface UserInputs {
-  apiKey: string;
+  apiKey?: string; // Kept optional for backward compatibility but unused in UI
   mode: 'individual' | 'compatibility';
   chartStyle: 'north' | 'south';
-  language: 'en' | 'hi'; // Added language support
+  language: 'en' | 'hi';
   dob: string;
   gender: 'male' | 'female' | 'other';
   timeOfBirth?: string;
@@ -16,6 +16,8 @@ export interface UserInputs {
   partnerGender?: 'male' | 'female' | 'other';
   partnerTimeOfBirth?: string;
   partnerPlaceOfBirth?: string;
+  // Image Generation
+  includeImage?: boolean;
 }
 
 export interface LuckyElements {
@@ -65,7 +67,7 @@ export interface CompatibilityReport {
 }
 
 export interface AnalysisResult {
-  language?: 'en' | 'hi'; // Added to track result language
+  language?: 'en' | 'hi';
   rootNumber: number;
   moonSign: string;
   nakshatra: string;
@@ -80,12 +82,11 @@ export interface AnalysisResult {
   strengthBoosters: string[];
   luckyElements: LuckyElements;
   practicalTips: string[];
-  // New features
   lifeBalanceScores: LifeBalanceScores;
   luckyDays: string[];
   festivalInsights: string;
-  // Detailed Compatibility Report (Optional - only for match mode)
   compatibilityReport?: CompatibilityReport;
+  generatedImage?: string; // Base64 string for the generated image
 }
 
 export enum AppState {

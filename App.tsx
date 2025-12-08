@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { AppState, UserInputs, AnalysisResult } from './types';
 import { InputForm } from './components/InputForm';
@@ -13,6 +14,7 @@ const App: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 
   useEffect(() => {
+    // Check for theme
     if (isDarkMode) {
       document.documentElement.classList.add('dark');
     } else {

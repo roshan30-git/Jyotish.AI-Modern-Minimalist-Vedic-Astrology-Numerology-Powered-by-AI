@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useState } from 'react';
 import { UserInputs } from '../types';
 import { 
-  Sparkles, Calendar, MapPin, Clock, User, Compass, Key, 
-  Users, UserCircle, Globe, Sun, Moon, Languages 
+  Sparkles, Compass, Users, UserCircle, Globe, Languages, ImageIcon, Key 
 } from 'lucide-react';
 
 interface InputFormProps {
@@ -43,25 +43,17 @@ export const InputForm: React.FC<InputFormProps> = ({ onSubmit, isLoading }) => 
     partnerDob: '',
     partnerGender: 'female',
     partnerTimeOfBirth: '',
-    partnerPlaceOfBirth: ''
+    partnerPlaceOfBirth: '',
+    includeImage: false
   });
 
-  // Load API Key from LocalStorage on mount
-  useEffect(() => {
-    const storedKey = localStorage.getItem('gemini_api_key');
-    if (storedKey) {
-      setFormData(prev => ({ ...prev, apiKey: storedKey }));
-    }
-  }, []);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
+    const { name, value, type } = e.target;
+    
     setFormData(prev => {
-      const updated = { ...prev, [name]: value };
-      if (name === 'apiKey') {
-        localStorage.setItem('gemini_api_key', value);
-      }
-      return updated;
+        const newVal = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
+        const updated = { ...prev, [name]: newVal };
+        return updated;
     });
   };
 
@@ -116,21 +108,6 @@ export const InputForm: React.FC<InputFormProps> = ({ onSubmit, isLoading }) => 
 
       <form onSubmit={handleSubmit} className="space-y-5">
         
-        {/* API Key */}
-        <div className="space-y-1.5">
-          <label className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 ml-1 flex items-center gap-1">
-            <Key className="w-3 h-3 text-orange-400" /> Gemini API Key <span className="text-slate-400 dark:text-slate-600 font-normal normal-case">(Optional)</span>
-          </label>
-          <input
-            type="password"
-            name="apiKey"
-            placeholder="Paste your key to use locally"
-            value={formData.apiKey}
-            onChange={handleChange}
-            className="w-full px-4 py-3 bg-white/60 dark:bg-slate-900/60 border border-orange-100 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-orange-400 outline-none transition-all text-slate-700 dark:text-slate-200 placeholder:text-slate-400"
-          />
-        </div>
-
         {/* Primary Person Details */}
         <div className="bg-orange-50/50 dark:bg-slate-700/30 p-4 rounded-xl space-y-4">
             <h3 className="text-xs font-bold text-orange-600 dark:text-orange-300 uppercase tracking-wide mb-2 flex items-center gap-2">
@@ -284,6 +261,27 @@ export const InputForm: React.FC<InputFormProps> = ({ onSubmit, isLoading }) => 
             </div>
         </div>
 
+        {/* Image Generation Option */}
+        <div className="bg-purple-50/50 dark:bg-slate-700/50 p-3 rounded-xl border border-purple-100 dark:border-slate-600 transition-all">
+             <div className="flex items-center justify-between">
+                <label className="flex items-center gap-2 cursor-pointer select-none">
+                    <div className="relative">
+                        <input 
+                            type="checkbox" 
+                            name="includeImage" 
+                            checked={formData.includeImage || false} 
+                            onChange={handleChange}
+                            className="sr-only peer" 
+                        />
+                        <div className="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-purple-500"></div>
+                    </div>
+                    <span className="text-sm font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-1">
+                        <ImageIcon className="w-4 h-4 text-purple-500" /> Generate Cosmic Art
+                    </span>
+                </label>
+             </div>
+        </div>
+
         {/* Preferences: Chart Style & Language */}
         <div className="flex flex-col md:flex-row gap-4 pt-2">
             {/* Chart Style */}
@@ -341,10 +339,31 @@ export const InputForm: React.FC<InputFormProps> = ({ onSubmit, isLoading }) => 
             </div>
         </div>
 
+        {/* Optional API Key */}
+        <div className="pt-4 border-t border-slate-200 dark:border-slate-700">
+             <div className="flex items-center gap-2 mb-2">
+                <Key className="w-4 h-4 text-slate-400" />
+                <label className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                    Custom API Key <span className="text-slate-300 dark:text-slate-600 normal-case font-normal">(Optional)</span>
+                </label>
+             </div>
+             <input
+                type="password"
+                name="apiKey"
+                value={formData.apiKey || ''}
+                onChange={handleChange}
+                placeholder="Paste your Gemini API Key here (starts with AIza...)"
+                className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-200 text-xs focus:ring-2 focus:ring-orange-400 outline-none placeholder:text-slate-400"
+            />
+             <p className="text-[10px] text-slate-400 mt-1">
+                Leave empty to use the default system key.
+             </p>
+        </div>
+
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full py-4 mt-4 bg-gradient-to-r from-orange-600 to-rose-600 hover:from-orange-500 hover:to-rose-500 text-white font-semibold rounded-xl shadow-lg shadow-orange-200 dark:shadow-none transform hover:-translate-y-0.5 transition-all disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          className="w-full py-4 mt-2 bg-gradient-to-r from-orange-600 to-rose-600 hover:from-orange-500 hover:to-rose-500 text-white font-semibold rounded-xl shadow-lg shadow-orange-200 dark:shadow-none transform hover:-translate-y-0.5 transition-all disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {isLoading ? (
             <>Analyzing Stars...</>
