@@ -5,7 +5,7 @@ import { AnalysisResult, CompatibilityReport } from '../types';
 import { 
   Heart, Briefcase, Zap, ShieldAlert, Star, 
   ArrowLeft, Leaf, BookOpen, User, Calendar, Share2, Printer, Music, CheckCircle2, XCircle,
-  MessageCircle, Flame, Lock, Coins, Sparkles, AlertTriangle, Download, ImageIcon
+  MessageCircle, Flame, Lock, Coins, Sparkles, AlertTriangle, Download, ImageIcon, Gamepad2
 } from 'lucide-react';
 
 interface ResultsViewProps {
@@ -58,7 +58,8 @@ const UI_LABELS = {
     family: "Family",
     spirituality: "Spirituality",
     downloadArt: "Download Art",
-    generatedArt: "Cosmic Art"
+    generatedArt: "Cosmic Art",
+    pokemonPartner: "Cosmic Pokemon Partner"
   },
   hi: {
     relationshipAnalysis: "सम्बंध विश्लेषण",
@@ -103,7 +104,8 @@ const UI_LABELS = {
     family: "परिवार",
     spirituality: "अध्यात्म",
     downloadArt: "कला डाउनलोड करें",
-    generatedArt: "ब्रह्मांडीय कला"
+    generatedArt: "ब्रह्मांडीय कला",
+    pokemonPartner: "ब्रह्मांडीय पोकेमोन साथी"
   }
 };
 
@@ -223,6 +225,27 @@ const CompatibilityDashboard: React.FC<{ data: AnalysisResult, report: Compatibi
                          <ul className="space-y-1">
                             {data.weeklyForecast.avoids.map((d, i) => <li key={i} className="text-sm text-slate-600 dark:text-slate-300">• {d}</li>)}
                          </ul>
+                    </div>
+                </div>
+            </div>
+            
+            {/* Pokemon Couple Card (Match Mode) */}
+            <div className="glass-card rounded-2xl p-6 bg-red-50/50 border border-red-100 dark:bg-slate-800/60 dark:border-slate-700">
+                <div className="flex flex-col md:flex-row gap-6 items-center">
+                    <div className="flex-shrink-0 w-24 h-24 bg-gradient-to-br from-red-500 to-white rounded-full flex items-center justify-center border-4 border-slate-900 shadow-lg">
+                         <div className="w-8 h-8 rounded-full bg-slate-900 ring-2 ring-white"></div>
+                    </div>
+                    <div className="flex-1 text-center md:text-left">
+                        <h3 className="text-sm font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1">{labels.pokemonPartner}</h3>
+                        <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
+                             <h2 className="text-2xl font-bold text-slate-800 dark:text-white">{data.pokemonPersona.name}</h2>
+                             <span className="px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-600 text-slate-600 dark:text-slate-200 text-xs font-bold uppercase">
+                                {data.pokemonPersona.type}
+                             </span>
+                        </div>
+                        <p className="text-sm text-slate-600 dark:text-slate-300 italic">
+                            "{data.pokemonPersona.description}"
+                        </p>
                     </div>
                 </div>
             </div>
@@ -418,6 +441,33 @@ export const ResultsView: React.FC<ResultsViewProps> = ({ data, onReset }) => {
                     )}
                 </div>
                 </div>
+            </div>
+
+            {/* Pokemon Persona Card (Individual Mode) */}
+            <div className="mb-8 glass-card rounded-2xl p-6 bg-red-50/50 border border-red-100 dark:bg-slate-800/60 dark:border-slate-700 flex flex-col sm:flex-row items-center gap-6">
+                 <div className="flex-shrink-0 w-24 h-24 bg-gradient-to-br from-red-500 to-white rounded-full flex items-center justify-center border-4 border-slate-900 shadow-lg relative group overflow-hidden">
+                     {/* Pokeball Aesthetic */}
+                     <div className="absolute inset-x-0 top-1/2 h-2 bg-slate-900 -mt-1"></div>
+                     <div className="absolute inset-0 border-b-4 border-slate-900/10 rounded-full"></div>
+                     <div className="relative w-8 h-8 rounded-full bg-slate-900 ring-4 ring-white z-10 flex items-center justify-center">
+                        <div className="w-3 h-3 bg-white rounded-full animate-pulse"></div>
+                     </div>
+                 </div>
+                 <div className="flex-1 text-center sm:text-left">
+                     <div className="flex items-center justify-center sm:justify-start gap-2 mb-1">
+                        <Gamepad2 className="w-4 h-4 text-slate-400" />
+                        <span className="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">{labels.pokemonPartner}</span>
+                     </div>
+                     <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-2 flex flex-col sm:flex-row items-center gap-2">
+                        {data.pokemonPersona.name} 
+                        <span className="px-2 py-0.5 rounded bg-white/50 border border-slate-200 dark:bg-slate-700 dark:border-slate-600 text-slate-600 dark:text-slate-300 text-xs font-bold uppercase">
+                            {data.pokemonPersona.type}
+                        </span>
+                     </h2>
+                     <p className="text-slate-700 dark:text-slate-300 italic text-sm">
+                        "{data.pokemonPersona.description}"
+                     </p>
+                 </div>
             </div>
 
             {/* Weekly Forecast Section */}

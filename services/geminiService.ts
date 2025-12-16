@@ -1,4 +1,5 @@
 
+
 import { GoogleGenAI, Type, Schema } from "@google/genai";
 import { UserInputs, AnalysisResult } from "../types";
 
@@ -17,6 +18,15 @@ const analysisSchema: Schema = {
         description: { type: Type.STRING, description: "Short reason why this animal represents them" }
       },
       required: ["animal", "emoji", "description"]
+    },
+    pokemonPersona: {
+      type: Type.OBJECT,
+      properties: {
+        name: { type: Type.STRING, description: "Name of the Pokemon (e.g., Lucario, Gengar, Dragonite)" },
+        type: { type: Type.STRING, description: "Type (e.g. Fighting/Steel)" },
+        description: { type: Type.STRING, description: "A Pokedex-style entry explaining why this Pokemon matches the user's astrological vibe." }
+      },
+      required: ["name", "type", "description"]
     },
     weeklyForecast: {
       type: Type.OBJECT,
@@ -121,7 +131,7 @@ const analysisSchema: Schema = {
     }
   },
   required: [
-    "rootNumber", "moonSign", "nakshatra", "basicSummary", "animalPersona", "weeklyForecast",
+    "rootNumber", "moonSign", "nakshatra", "basicSummary", "animalPersona", "pokemonPersona", "weeklyForecast",
     "personality", "loveMarriage", "careerMoney", "health", 
     "areasToAvoid", "strengthBoosters", "luckyElements", "practicalTips",
     "lifeBalanceScores", "luckyDays", "festivalInsights"
@@ -181,8 +191,9 @@ export const generateAstrologyInsights = async (inputs: UserInputs): Promise<Ana
     4. 'auspiciousMilestones': Suggest 3 specific future periods/dates for key relationship steps (Engagement, Marriage, Travel, Moving in).
     5. 'challengesToAvoid': What specifically triggers fights for THIS couple?
     6. 'animalPersona': Create a "Couple Power Animal" (e.g., "Two Wolves", "Swan Pair", "Lion & Lioness").
-    7. 'weeklyForecast': Focus strictly on relationship harmony/conflicts for this week.
-    8. For standard arrays like 'careerMoney' or 'health', provide BRIEF insights on how the relationship affects these areas (e.g., "Partner A brings luck to Partner B's career").
+    7. 'pokemonPersona': Select a Pokemon Duo or a single powerful Pokemon that represents their combined energy (e.g., "Latios & Latias", "Gardevoir", "Nidoqueen/Nidoking").
+    8. 'weeklyForecast': Focus strictly on relationship harmony/conflicts for this week.
+    9. For standard arrays like 'careerMoney' or 'health', provide BRIEF insights on how the relationship affects these areas (e.g., "Partner A brings luck to Partner B's career").
     `;
   } else {
     prompt += `
@@ -197,6 +208,7 @@ export const generateAstrologyInsights = async (inputs: UserInputs): Promise<Ana
     INSTRUCTIONS:
     - Calculate Root Number, Moon Sign, Nakshatra.
     - 'compatibilityReport' should be null.
+    - 'pokemonPersona': Select one unique Pokemon from any generation (Gen 1-9) that perfectly matches their astrological vibe, elements, and personality traits.
     - Focus on individual growth, career, marriage, and health.
     `;
   }

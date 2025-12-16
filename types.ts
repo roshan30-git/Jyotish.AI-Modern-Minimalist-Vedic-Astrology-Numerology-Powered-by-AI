@@ -41,6 +41,12 @@ export interface AnimalPersona {
   description: string;
 }
 
+export interface PokemonPersona {
+  name: string;
+  type: string;
+  description: string;
+}
+
 export interface WeeklyForecast {
   title: string;
   dos: string[];
@@ -73,6 +79,7 @@ export interface AnalysisResult {
   nakshatra: string;
   basicSummary: string;
   animalPersona: AnimalPersona;
+  pokemonPersona: PokemonPersona;
   weeklyForecast: WeeklyForecast;
   personality: string[];
   loveMarriage: string[];
