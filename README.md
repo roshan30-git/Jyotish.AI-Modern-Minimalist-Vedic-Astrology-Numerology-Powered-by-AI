@@ -89,32 +89,43 @@ You can use Python, Node, or an extension like "Live Server" in VS Code.
 code
 Bash
 # Using npx and serve
+
+```markdown
 npx serve .
 Open your browser to http://localhost:3000.
-📂 Project Structure
-code
-Code
-/
-├── components/          # React UI Components
-│   ├── InputForm.tsx    # User data entry & Profile saving
-│   ├── LoadingView.tsx  # Animated loading state
-│   └── ResultsView.tsx  # Displays Analysis, Compatibility, & Decision dashboards
+
+## 📂 Project Structure
+
+```
+code Code /
+├── components/           # React UI Components
+│   ├── InputForm.tsx     # User data entry & Profile saving
+│   ├── LoadingView.tsx   # Animated loading state
+│   └── ResultsView.tsx   # Displays Analysis, Compatibility, & Decision dashboards
 ├── services/
-│   └── geminiService.ts # Logic for calling Google Gemini API & prompt engineering
-├── App.tsx              # Main application controller & Layout
-├── types.ts             # TypeScript interfaces and data models
-├── index.html           # Entry point & Tailwind configuration
-├── index.tsx            # React mounting point
-└── metadata.json        # Project metadata
-🤝 Contributing
+│   └── geminiService.ts  # Logic for calling Google Gemini API & prompt engineering
+├── App.tsx               # Main application controller & Layout
+├── types.ts              # TypeScript interfaces and data models
+├── index.html            # Entry point & Tailwind configuration
+├── index.tsx             # React mounting point
+└── metadata.json         # Project metadata
+```
+
+## 🤝 Contributing
+
 Contributions are welcome!
-Fork the project.
-Create your feature branch (git checkout -b feature/AmazingFeature).
-Commit your changes (git commit -m 'Add some AmazingFeature').
-Push to the branch (git push origin feature/AmazingFeature).
-Open a Pull Request.
-⚠️ Disclaimer
-Cosmic.AI is for entertainment and self-reflection purposes only.
-The AI simulates an astrologer persona. It does not provide medical, legal, or financial advice. The "Decision Compass" assesses timing based on astrological logic but should not dictate life choices. Always use your own judgment.
-📄 License
-Distributed under the MIT License. See LICENSE for more information
+
+1. Fork the project.
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`).
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`).
+4. Push to the branch (`git push origin feature/AmazingFeature`).
+5. Open a Pull Request.
+
+## ⚠️ Disclaimer
+
+Cosmic.AI is for entertainment and self-reflection purposes only. The AI simulates an astrologer persona. It does not provide medical, legal, or financial advice. The "Decision Compass" assesses timing based on astrological logic but should not dictate life choices. Always use your own judgment.
+
+## 📄 License
+
+Distributed under the MIT License. See LICENSE for more information.
+```
